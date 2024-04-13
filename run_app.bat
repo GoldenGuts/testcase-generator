@@ -43,7 +43,7 @@ if not exist "node_modules" (
 )
 
 :: Start React development server
-start cmd /k "set PORT=%REACT_PORT% & npm start"
+start cmd /k "set PORT=%REACT_PORT% & npm run build-local"
 
 cd ..
 

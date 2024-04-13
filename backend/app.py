@@ -8,7 +8,7 @@ from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
-app.config['DEBUG'] = True
+# app.config['DEBUG'] = True
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 

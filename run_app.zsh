@@ -3,7 +3,7 @@
 # Setup configuration
 FRONTEND_DIR="frontend"
 BACKEND_DIR="backend"
-VENV_DIR="venv"
+VENV_DIR="env"
 
 # Custom ports
 REACT_PORT=3006
@@ -48,7 +48,7 @@ fi
 # Start React development server
 { 
     export PORT=$REACT_PORT
-    npm start &
+    npm run build-local &
 } &
 
 cd ..

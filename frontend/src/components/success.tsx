@@ -1,9 +1,9 @@
 import React from "react";
 
-const success = () => {
+const success: React.FC = () => {
   return (
     <div>
-      <h2>successfully updated all the issues <i style={{color: "green"}} class="fa-solid fa-circle-check"></i></h2>
+      <h2>successfully updated all the issues <i style={{color: "green"}} className="fa-solid fa-circle-check"></i></h2>
       
     </div>
   );

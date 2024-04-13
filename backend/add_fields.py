@@ -3,7 +3,7 @@ from jira import JIRA
 
 class AddFields:
     def __init__(self, jira_email, jira_token):
-        self.server = os.getenv('jira_endpoint')
+        self.server = os.getenv('JIRA_ENDPOINT')
         self.email = jira_email
         self.token = jira_token
 

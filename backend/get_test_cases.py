@@ -12,7 +12,7 @@ from backend.openai_service import OpenAIService
 class JiraService :
 
     def __init__(self, jira_email, jira_token, api_key):
-        self.server = os.getenv('jira_endpoint')
+        self.server = os.getenv('JIRA_ENDPOINT')
         self.email = jira_email
         self.token = jira_token
         self.openai_api_key = api_key

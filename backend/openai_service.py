@@ -7,15 +7,15 @@ load_dotenv()
 class OpenAIService:
 
     def __init__(self, api_key):
-        self.api_type = os.getenv('api_type')
-        self.api_version = os.getenv('api_version')
-        self.api_base = os.getenv('api_base')
+        self.API_TYPE = os.getenv('API_TYPE')
+        self.API_VERSION = os.getenv('API_VERSION')
+        self.API_BASE = os.getenv('API_BASE')
         self.api_key = api_key
 
     def get_completion(self, system_prompt, user_prompt):
-        openai.api_type = self.api_type
-        openai.api_version = self.api_version
-        openai.api_base = self.api_base
+        openai.API_TYPE = self.API_TYPE
+        openai.API_VERSION = self.API_VERSION
+        openai.API_BASE = self.API_BASE
         openai.api_key = self.api_key
         
         result = []

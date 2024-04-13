@@ -1,0 +1,42 @@
+[
+    {
+        "summary": "This will be test name for test case 1",
+        "steps": [
+            {
+                "action": "some action related to test case 1 for step 1",
+                "data": "data related to test case 1 for step 1",
+                "result": "expected result 1."
+            },
+            {
+                "action": "some action related to test case 1 for step 2",
+                "data": "data related to test case 1 for step 2",
+                "result": "expected result 2"
+            },
+            {
+                "action": "some action related to test case 1 for step 3",
+                "data": "data related to test case 1 for step 3",
+                "result": "expected result 3"
+            }
+        ]
+    },
+    {
+        "summary": "This will be test name for test case 2",
+        "steps": [
+            {
+                "action": "some action related to test case 2 for step 1",
+                "data": "data related to test case 2 for step 1",
+                "result": "expected result 1."
+            },
+            {
+                "action": "some action related to test case 2 for step 2",
+                "data": "data related to test case 2 for step 2",
+                "result": "expected result 2"
+            },
+            {
+                "action": "some action related to test case 2 for step 3",
+                "data": "data related to test case 2 for step 3",
+                "result": "expected result 3"
+            }
+        ]
+    }
+]

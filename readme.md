@@ -22,8 +22,8 @@ This project consists of two main directories:
 Clone the project repository using Git:
 
 ```bash
-git clone https://your-repository-url.com
-cd your-project-directory
+git clone https://github.com/GoldenGuts/testcase-generator
+cd testcase-generator
 ```
 
 ### 2. Configuration

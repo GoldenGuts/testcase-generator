@@ -13,9 +13,9 @@ class OpenAIService:
         self.api_key = api_key
 
     def get_completion(self, system_prompt, user_prompt):
-        openai.API_TYPE = self.API_TYPE
-        openai.API_VERSION = self.API_VERSION
-        openai.API_BASE = self.API_BASE
+        openai.api_type = self.API_TYPE
+        openai.api_version = self.API_VERSION
+        openai.api_base = self.API_BASE
         openai.api_key = self.api_key
         
         result = []

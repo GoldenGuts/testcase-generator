@@ -9,7 +9,9 @@ class AddFields:
 
     def add_fields(self, issue_key, component, labels):
 
-        print(f"Updating JIRA issue {issue_key} with component '{component}' and label '{labels}'...")
+        labelsArray = labels.split(", ")
+
+        print(f"Updating JIRA issue {issue_key} with component '{component}' and labels '{labels}'...")
         jiraOptions = {'server': self.server}
         user_email = self.email
         jira_token = self.token
@@ -20,12 +22,7 @@ class AddFields:
         issue = jira.issue(issue_key)
 
         issue.update(fields={'components': new_components})
-
-        current_labels = issue.fields.labels
-        for label in labels:
-            if label not in current_labels:
-                current_labels.append(label)
-                issue.update(fields={"labels": [label]})
+        issue.update(fields={"labels": labelsArray})
 
         print(f"JIRA issue {issue_key} setting to In Progress...")
         jira.transition_issue(issue_key, 51)

@@ -24,7 +24,7 @@ class XrayImport:
         with open(file_path, 'r') as file:
             return json.load(file)
 
-    def format_test_cases(self, json_data, xray_test_sets):
+    def format_test_cases(self, json_data, jira_issue_id, xray_test_sets):
         print("Formatting test cases...")
         template = {
             "testtype": "Manual",
@@ -36,7 +36,7 @@ class XrayImport:
                     {
                         "add": {
                             "type": {"name": "Test"},
-                            "outwardIssue": {"key": "BP-2754"}
+                            "outwardIssue": {"key": jira_issue_id}
                         }
                     }
                 ]
@@ -74,6 +74,7 @@ class XrayImport:
 
     def post_test_cases(self, auth_token, test_cases):
         print("Posting test cases to Xray...")
+        print(test_cases)
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {auth_token}"

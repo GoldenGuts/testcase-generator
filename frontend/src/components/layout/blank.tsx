@@ -24,6 +24,7 @@ const getTooltipMessage = () => {
 const BlankLayout: React.FC<BlankLayoutProps> = ({ children }) => {
   return (
     <div className="blank-layout">
+      <img src="/logo.webp" alt="Logo for Litera" />
       <div className="header-container">
         {/* Center - navbar icons */}
         <div className="navbar-center">

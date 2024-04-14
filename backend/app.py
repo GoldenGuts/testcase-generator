@@ -73,8 +73,9 @@ def post_test_cases():
 
     testcase_json = json.loads(json.loads(data.get('testcase_data')))
     xray_set = data.get('xray_test_sets')
+    jira_issue_id = data.get('jira_issue_id')
 
-    formatted_data = XrayImport().format_test_cases(testcase_json, xray_set)
+    formatted_data = XrayImport().format_test_cases(testcase_json, jira_issue_id, xray_set)
     job_id = XrayImport().post_test_cases(token, formatted_data)
     keys = XrayImport().get_job_keys(token, job_id)
     return jsonify(keys), 200
@@ -100,6 +101,8 @@ def add_fields():
     key = data["key"]
     label = data["label"]
     component = data["component"]
+    
+    print(label)
     
     AddFields(jira_email, jira_token).add_fields(key, component, label)
     

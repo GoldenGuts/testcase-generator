@@ -89,7 +89,7 @@ class JiraService :
 
             result = OpenAIService(self.openai_api_key).get_completion(system_prompt, user_prompt + '\n' + base_prompt)
 
-            with open("result.json", "w") as f:
-                    f.write(result)
+            # with open("result.json", "w") as f:
+            #         f.write(result)
 
             return result

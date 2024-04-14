@@ -37,7 +37,8 @@ const TestCases: React.FC<TestCasesProps> = () => {
         "/post_test_cases",
         {
           "xray_test_sets": inputValue,
-          "testcase_data": localStorage.getItem("testcases")
+          "testcase_data": localStorage.getItem("testcases"),
+          "jira_issue_id": localStorage.getItem("jira_issue_id")
         },
         { headers: { Authorization: `Bearer ${Cookies.get("xray")}` } }
       );
@@ -89,7 +90,8 @@ const TestCases: React.FC<TestCasesProps> = () => {
   const BackButton: React.FC = () => {
     return (
       <>
-        {(inputMode.length > 1) && <i className="fa-solid fa-arrow-left" onClick={handleBack} style={{}}></i>}
+        {(inputMode.length > 1) && <i className="fa-solid fa-arrow-left" onClick={handleBack} style={{}}> Back</i>}
+        
       </>
     )
   }

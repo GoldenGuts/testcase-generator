@@ -8,7 +8,7 @@ const TestCasesAccordionWrapper: React.FC = () => {
   // Check if 'testcases' is not null and is a valid JSON string
   if (storedTestCases) {
     try {
-      parsedJSON = JSON.parse(JSON.parse(storedTestCases));
+      parsedJSON = JSON.parse(storedTestCases);
     } catch (error) {
       console.error("Parsing error:", error);
       parsedJSON = []; // Default to an empty array in case of error

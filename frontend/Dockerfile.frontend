@@ -1,17 +1,23 @@
 # Use an official Node runtime as a parent image
-FROM node:14
+FROM node:20.2
 
 # Set the working directory to /app
 WORKDIR /app
 
 # Copy the current directory contents into the container at /app
-COPY . /app
+# COPY yarnrc.yml ./
+
+COPY package.json ./
 
 # Install any needed packages specified in package.json
 RUN npm install
 
+COPY . .
+
 # Make port 3006 available to the world outside this container
-EXPOSE 3006
+EXPOSE 3000
 
 # Command to run the app
 CMD ["npm", "start"]
+
+

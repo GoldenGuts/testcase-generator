@@ -10,7 +10,6 @@ import { isAxiosError } from "axios";
 interface SettingsProps {}
 
 const Settings: React.FC<SettingsProps> = () => {
-  // Define the type of data to be submitted
   interface FormData {
     jira_email: string;
     jira_token: string;
@@ -24,18 +23,17 @@ const Settings: React.FC<SettingsProps> = () => {
   const [error, setError] = useState<string | null>(null);
   const [displayName, setDisplayName] = useState("");
 
-  if(localStorage.getItem("jira_user") !== null) {
-    setDisplayName(localStorage.getItem("jira_user") as string)
-  }
+  useEffect(() => {
+    if (localStorage.getItem("jira_user") !== null) {
+      setDisplayName(localStorage.getItem("jira_user") as string);
+    }
+  }, []); 
 
   useEffect(() => {
-    // Check if the cookie is present on page load
     const cookieValue = Cookies.get("jira");
     setCookiePresent(cookieValue !== undefined);
   }, [cookiePresent]);
-  // State for response from the backend (optional)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // const [response, setResponse] = useState<any>(null);
+
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -66,7 +64,6 @@ const Settings: React.FC<SettingsProps> = () => {
         setError("An unknown error occurred");
         setCookiePresent(false);
       }
-      // Handle errors appropriately (e.g., display error message to the user)
     }
   };
 
@@ -82,7 +79,7 @@ const Settings: React.FC<SettingsProps> = () => {
                   Authenticated as: {displayName}
                 </h6>
               ) : (
-                <h6 className="datapresent-text">Not Authenticated</h6>
+                <h6 style={{color:"red"}}>Not Authenticated</h6>
               )}
               {error && <Alert variant="danger">{error}</Alert>}
 

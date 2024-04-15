@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Navbar, Nav, OverlayTrigger, Tooltip } from "react-bootstrap";
 import Cookies from "js-cookie";
 import "./blank.css";
@@ -13,7 +13,7 @@ const getTooltipMessage = () => {
   if (xrayExists && jiraExists) {
     return "All Authenticated";
   } else if (xrayExists) {
-    return "Jira & OpenAI data unavailable";
+    return "Jira unauthorized";
   } else if (jiraExists) {
     return "XRay unauthorized";
   } else {
@@ -44,7 +44,7 @@ const BlankLayout: React.FC<BlankLayoutProps> = ({ children }) => {
               <Nav.Link href="/settings">
                 <i
                   className={`fas fa-cog ${
-                    Cookies.get("xray") || Cookies.get("jira") ? "green-icon" : ""
+                    Cookies.get("xray") && Cookies.get("jira") ? "green-icon" : ""
                   }`}
                 ></i>
               </Nav.Link>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Navbar, Nav, OverlayTrigger, Tooltip } from "react-bootstrap";
 import Cookies from "js-cookie";
 import "./blank.css";

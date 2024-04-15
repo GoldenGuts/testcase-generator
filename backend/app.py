@@ -6,15 +6,39 @@ import jwt, json, os
 import datetime
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 from flask_cors import CORS
+
+import logging
+from logging.handlers import RotatingFileHandler
+
 app = Flask(__name__)
 CORS(app)
 # app.config['DEBUG'] = True
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
+# Setup logging
+if not app.debug:
+    handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=1)
+    handler.setFormatter(logging.Formatter(
+        '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+    ))
+    app.logger.addHandler(handler)
+    app.logger.setLevel(logging.INFO)
+
 @app.route("/")
 def hello_world():
     return "<p>Hello, World!</p>"
+
+@app.route("/test", methods=['POST'])
+def test():
+    try:
+        # Assuming JSON input...
+        data = request.get_json()
+        # Your logic here...
+        return jsonify(data), 200
+    except Exception as e:
+        app.logger.error(f'Error: {str(e)}')
+        return jsonify({'error': 'Internal Server Error'}), 500
 
 @app.route('/post_example', methods=['POST'])
 def post_example():
@@ -165,3 +189,6 @@ def authenticate_xray():
     except Exception as e:
         print(f"An exception occurred: {e}")
         return make_response(jsonify({"error": "Internal Server Error", "message": str(e)}), 500)
+    
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5006, debug=True, use_reloader=False)

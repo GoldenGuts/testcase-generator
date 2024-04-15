@@ -7,7 +7,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-from backend.openai_service import OpenAIService
+from openai_service import OpenAIService
 
 class JiraService :
 

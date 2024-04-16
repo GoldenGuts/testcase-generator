@@ -49,6 +49,15 @@ const TestCasesAccordion: React.FC<TestCasesAccordionProps> = ({
     setTestCasesData(updatedTestCases);
   };
 
+  const handleUpdateSummary = (
+    index: number,
+    value: string
+  ) => {
+    const updatedTestCases = [...testCasesData];
+    updatedTestCases[index].summary = value;
+    setTestCasesData(updatedTestCases);
+  };
+
   return (
     <Accordion
       activeKey={activeKey}
@@ -59,6 +68,9 @@ const TestCasesAccordion: React.FC<TestCasesAccordionProps> = ({
         <Card key={index}>
           <Card.Header className="d-flex justify-content-between align-items-center bg-white">
             <Accordion.Header
+              contentEditable={true}
+              onBlur={(e) => handleUpdateSummary(index, e.target.textContent || "")}
+
               onClick={() =>
                 setActiveKey(activeKey === `${index}` ? null : `${index}`)
               }
@@ -67,7 +79,7 @@ const TestCasesAccordion: React.FC<TestCasesAccordionProps> = ({
               {testCase.summary}
             </Accordion.Header>
             <Button
-              style={{marginLeft: "15px"}}
+              style={{ marginLeft: "15px" }}
               variant="outline-danger"
               size="sm"
               onClick={(e) => handleDelete(index, e)}

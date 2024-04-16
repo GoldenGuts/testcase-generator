@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Form, Row, Alert } from "react-bootstrap";
 import axios from "../axios";
 import { XrayForm } from "./xrayForm";
-import "./settings.css";
 import Cookies from "js-cookie";
 import { isAxiosError } from "axios";
+import "./settings.css";
 
 interface SettingsProps {}
 
@@ -78,9 +78,7 @@ const Settings: React.FC<SettingsProps> = () => {
                 <h6 className="datapresent-text">
                   Authenticated as: {displayName}
                 </h6>
-              ) : (
-                <h6 style={{color:"red"}}>Not Authenticated</h6>
-              )}
+              ) : (<></>)}
               {error && <Alert variant="danger">{error}</Alert>}
 
               <Form.Group

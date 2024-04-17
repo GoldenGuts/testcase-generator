@@ -1,0 +1,105 @@
+2024-04-17 09:06:34,865 ERROR: Exception on /get_test_cases [POST] [in /usr/local/lib/python3.8/site-packages/flask/app.py:838]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.8/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/app/app.py", line 81, in get_test_cases
+    response = JiraService(jira_email, jira_token).start_generating(jira_issue_id, system_prompt, user_prompt)
+  File "/app/get_test_cases.py", line 33, in start_generating
+    singleIssue = jira.issue(i)
+  File "/usr/local/lib/python3.8/site-packages/jira/client.py", line 1482, in issue
+    issue.find(id, params=params)
+  File "/usr/local/lib/python3.8/site-packages/jira/resources.py", line 259, in find
+    self._find_by_url(url, params)
+  File "/usr/local/lib/python3.8/site-packages/jira/resources.py", line 275, in _find_by_url
+    self._load(url, params=params)
+  File "/usr/local/lib/python3.8/site-packages/jira/resources.py", line 447, in _load
+    r = self._session.get(url, headers=headers, params=params)
+  File "/usr/local/lib/python3.8/site-packages/requests/sessions.py", line 602, in get
+    return self.request("GET", url, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/jira/resilientsession.py", line 247, in request
+    elif raise_on_error(response, **processed_kwargs):
+  File "/usr/local/lib/python3.8/site-packages/jira/resilientsession.py", line 72, in raise_on_error
+    raise JIRAError(
+jira.exceptions.JIRAError: JiraError HTTP 404 url: https://literadev.atlassian.net/rest/api/2/issue/test
+	text: Issue does not exist or you do not have permission to see it.
+	
+	response headers = {'Date': 'Wed, 17 Apr 2024 09:06:34 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Server': 'AtlassianEdge', 'Timing-Allow-Origin': '*', 'X-Arequestid': '42cd0d77586dcc287a9c9e22b7a9e2c4', 'X-Aaccountid': '62200a7b9c3cce00694b5be6', 'Cache-Control': 'no-cache, no-store, no-transform', 'Content-Encoding': 'gzip', 'X-Content-Type-Options': 'nosniff', 'X-Xss-Protection': '1; mode=block', 'Atl-Traceid': '3cc38a1d4b5d4d3e854145c741aa5125', 'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload', 'Report-To': '{"endpoints": [{"url": "https://dz8aopenkvv6s.cloudfront.net"}], "group": "endpoint-1", "include_subdomains": true, "max_age": 600}', 'Nel': '{"failure_fraction": 0.001, "include_subdomains": true, "max_age": 600, "report_to": "endpoint-1"}', 'Transfer-Encoding': 'chunked'}
+	response text = {"errorMessages":["Issue does not exist or you do not have permission to see it."],"errors":{}}
+2024-04-17 09:51:53,560 ERROR: Exception on /get_test_cases [POST] [in /usr/local/lib/python3.8/site-packages/flask/app.py:838]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.8/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/app/app.py", line 81, in get_test_cases
+    response = JiraService(jira_email, jira_token).start_generating(jira_issue_id, system_prompt, user_prompt)
+  File "/app/get_test_cases.py", line 33, in start_generating
+    singleIssue = jira.issue(i)
+  File "/usr/local/lib/python3.8/site-packages/jira/client.py", line 1482, in issue
+    issue.find(id, params=params)
+  File "/usr/local/lib/python3.8/site-packages/jira/resources.py", line 259, in find
+    self._find_by_url(url, params)
+  File "/usr/local/lib/python3.8/site-packages/jira/resources.py", line 275, in _find_by_url
+    self._load(url, params=params)
+  File "/usr/local/lib/python3.8/site-packages/jira/resources.py", line 447, in _load
+    r = self._session.get(url, headers=headers, params=params)
+  File "/usr/local/lib/python3.8/site-packages/requests/sessions.py", line 602, in get
+    return self.request("GET", url, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/jira/resilientsession.py", line 247, in request
+    elif raise_on_error(response, **processed_kwargs):
+  File "/usr/local/lib/python3.8/site-packages/jira/resilientsession.py", line 72, in raise_on_error
+    raise JIRAError(
+jira.exceptions.JIRAError: JiraError HTTP 404 url: https://literadev.atlassian.net/rest/api/2/issue/BP-3750
+	text: Issue does not exist or you do not have permission to see it.
+	
+	response headers = {'Date': 'Wed, 17 Apr 2024 09:51:53 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Server': 'AtlassianEdge', 'Timing-Allow-Origin': '*', 'X-Arequestid': 'c90ca9340edadca77d981ece2607f6c8', 'X-Aaccountid': '62200a7b9c3cce00694b5be6', 'Cache-Control': 'no-cache, no-store, no-transform', 'Content-Encoding': 'gzip', 'X-Content-Type-Options': 'nosniff', 'X-Xss-Protection': '1; mode=block', 'Atl-Traceid': 'e406f645d6aa41aa84d1900fd85edb68', 'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload', 'Report-To': '{"endpoints": [{"url": "https://dz8aopenkvv6s.cloudfront.net"}], "group": "endpoint-1", "include_subdomains": true, "max_age": 600}', 'Nel': '{"failure_fraction": 0.001, "include_subdomains": true, "max_age": 600, "report_to": "endpoint-1"}', 'Transfer-Encoding': 'chunked'}
+	response text = {"errorMessages":["Issue does not exist or you do not have permission to see it."],"errors":{}}
+2024-04-17 09:52:09,847 ERROR: Exception on /get_test_cases [POST] [in /usr/local/lib/python3.8/site-packages/flask/app.py:838]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.8/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.8/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/app/app.py", line 81, in get_test_cases
+    response = JiraService(jira_email, jira_token).start_generating(jira_issue_id, system_prompt, user_prompt)
+  File "/app/get_test_cases.py", line 33, in start_generating
+    singleIssue = jira.issue(i)
+  File "/usr/local/lib/python3.8/site-packages/jira/client.py", line 1482, in issue
+    issue.find(id, params=params)
+  File "/usr/local/lib/python3.8/site-packages/jira/resources.py", line 259, in find
+    self._find_by_url(url, params)
+  File "/usr/local/lib/python3.8/site-packages/jira/resources.py", line 275, in _find_by_url
+    self._load(url, params=params)
+  File "/usr/local/lib/python3.8/site-packages/jira/resources.py", line 447, in _load
+    r = self._session.get(url, headers=headers, params=params)
+  File "/usr/local/lib/python3.8/site-packages/requests/sessions.py", line 602, in get
+    return self.request("GET", url, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/jira/resilientsession.py", line 247, in request
+    elif raise_on_error(response, **processed_kwargs):
+  File "/usr/local/lib/python3.8/site-packages/jira/resilientsession.py", line 72, in raise_on_error
+    raise JIRAError(
+jira.exceptions.JIRAError: JiraError HTTP 404 url: https://literadev.atlassian.net/rest/api/2/issue/BP-3758
+	text: Issue does not exist or you do not have permission to see it.
+	
+	response headers = {'Date': 'Wed, 17 Apr 2024 09:52:09 GMT', 'Content-Type': 'application/json;charset=UTF-8', 'Server': 'AtlassianEdge', 'Timing-Allow-Origin': '*', 'X-Arequestid': '887cee3947c19380f6249adb7b8500ee', 'X-Aaccountid': '62200a7b9c3cce00694b5be6', 'Cache-Control': 'no-cache, no-store, no-transform', 'Content-Encoding': 'gzip', 'X-Content-Type-Options': 'nosniff', 'X-Xss-Protection': '1; mode=block', 'Atl-Traceid': 'b13038a05177418691b362b1012cb50e', 'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload', 'Report-To': '{"endpoints": [{"url": "https://dz8aopenkvv6s.cloudfront.net"}], "group": "endpoint-1", "include_subdomains": true, "max_age": 600}', 'Nel': '{"failure_fraction": 0.001, "include_subdomains": true, "max_age": 600, "report_to": "endpoint-1"}', 'Transfer-Encoding': 'chunked'}
+	response text = {"errorMessages":["Issue does not exist or you do not have permission to see it."],"errors":{}}

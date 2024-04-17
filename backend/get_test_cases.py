@@ -31,6 +31,7 @@ class JiraService :
 
         for x, i in enumerate(user_story_list):
             singleIssue = jira.issue(i)
+            print(f"issue id {singleIssue.key}")
             story_data = {
                 'id': singleIssue.id,
                 'key': singleIssue.key,
@@ -42,7 +43,7 @@ class JiraService :
 
             print(f"{x+1} Generating test cases for story..{i}")
             base_prompt = '''
-                The objective is to cover the following acceptance criteria: {{ac}} and validate the functionality of {{summary}}.
+                The objective is to cover the following acceptance criteria: {{ac}} and validate the functionality of {{summary}} with {{description}}.
                 Refer to the workflow : {{workflow}} to add more details or preconditions to the test case if necessary.
                 Please write the test cases (the number of test cases should be atleast 3) using the following valid json format and only provide data if required, otherwise omit the data key.:
                 [
@@ -90,7 +91,9 @@ class JiraService :
 
             '''
 
-            for key in ['summary', 'workflow', 'ac']:
+            for key in ['summary', 'description', 'workflow', 'ac']:
+                if story_data.get(key) is None:
+                    continue
                 base_prompt = base_prompt.replace('{{' + key + '}}', story_data[key])
 
             result = OpenAIService(self.openai_api_key).get_completion(system_prompt, user_prompt + '\n' + base_prompt)

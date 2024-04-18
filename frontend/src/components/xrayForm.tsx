@@ -69,7 +69,7 @@ export const XrayForm: React.FC = () => {
       );
 
       if (response.status === 200 && response.data.token) {
-        Cookies.set("xray", response.data.token, { expires: 7 }); // setting cookie for 7 days
+        Cookies.set("xray", response.data.token, { expires: 1 }); 
         setXRayAuth({ attempted: true, authed: true });
         setCookiePresent(true)
       } else {

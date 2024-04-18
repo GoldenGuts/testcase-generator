@@ -49,10 +49,7 @@ const TestCasesAccordion: React.FC<TestCasesAccordionProps> = ({
     setTestCasesData(updatedTestCases);
   };
 
-  const handleUpdateSummary = (
-    index: number,
-    value: string
-  ) => {
+  const handleUpdateSummary = (index: number, value: string) => {
     const updatedTestCases = [...testCasesData];
     updatedTestCases[index].summary = value;
     setTestCasesData(updatedTestCases);
@@ -68,9 +65,11 @@ const TestCasesAccordion: React.FC<TestCasesAccordionProps> = ({
         <Card key={index}>
           <Card.Header className="d-flex justify-content-between align-items-center bg-white">
             <Accordion.Header
+              suppressContentEditableWarning={true}
               contentEditable={true}
-              onBlur={(e) => handleUpdateSummary(index, e.target.textContent || "")}
-
+              onBlur={(e) =>
+                handleUpdateSummary(index, e.target.textContent || "")
+              }
               onClick={() =>
                 setActiveKey(activeKey === `${index}` ? null : `${index}`)
               }
@@ -103,6 +102,7 @@ const TestCasesAccordion: React.FC<TestCasesAccordionProps> = ({
                     <tr key={stepIndex}>
                       <td>{stepIndex + 1}</td>
                       <td
+                        suppressContentEditableWarning={true}
                         contentEditable={true}
                         onBlur={(e) =>
                           handleUpdate(
@@ -116,6 +116,7 @@ const TestCasesAccordion: React.FC<TestCasesAccordionProps> = ({
                         {step.action}
                       </td>
                       <td
+                        suppressContentEditableWarning={true}
                         contentEditable={true}
                         onBlur={(e) =>
                           handleUpdate(
@@ -129,6 +130,7 @@ const TestCasesAccordion: React.FC<TestCasesAccordionProps> = ({
                         {step.data || "N/A"}
                       </td>
                       <td
+                        suppressContentEditableWarning={true}
                         contentEditable={true}
                         onBlur={(e) =>
                           handleUpdate(

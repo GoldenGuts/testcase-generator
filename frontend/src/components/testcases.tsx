@@ -75,8 +75,9 @@ const TestCases: React.FC<TestCasesProps> = () => {
         }
       );
       console.log("Regenerated successfully:", response.data);
-      localStorage.setItem('uptc', response.data);
+      localStorage.setItem('testcases', response.data);
       setUserPrompt(""); // Clear input after use
+      window.location.reload();
     } catch (error) {
       console.error("Regeneration failed:", error);
     } finally {

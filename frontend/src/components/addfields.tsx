@@ -90,7 +90,7 @@ const XRayFields: React.FC = () => {
           />
         </Form.Group>
 
-        <Button className="ml-5" type="submit" disabled={isLoading}>
+        <Button className="ml-5 btn-custom" type="submit" disabled={isLoading}>
           Add
         </Button>
         

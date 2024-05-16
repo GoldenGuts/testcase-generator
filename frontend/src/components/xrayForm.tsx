@@ -112,7 +112,7 @@ export const XrayForm: React.FC = () => {
           onChange={handleInputChange}
         />
       </Form.Group>
-      <Button className="ml-5" type="submit" disabled={isSubmitting}>
+      <Button className="ml-5 btn-custom" type="submit" disabled={isSubmitting}>
         Authenticate
       </Button>
     </Form>

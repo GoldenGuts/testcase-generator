@@ -76,8 +76,8 @@ const TestCases: React.FC<TestCasesProps> = () => {
       );
       console.log("Regenerated successfully:", response.data);
       localStorage.setItem('testcases', response.data);
-      setUserPrompt(""); // Clear input after use
-      window.location.reload();
+      setUserPrompt(""); 
+      window.location.reload(); 
     } catch (error) {
       console.error("Regeneration failed:", error);
     } finally {
@@ -107,7 +107,7 @@ const TestCases: React.FC<TestCasesProps> = () => {
         {inputMode === "" && (
           <>
             <Button
-              className="button"
+              className="button btn-custom"
               type="button"
               disabled={isSubmitting}
               onClick={handleRegenerate}
@@ -116,7 +116,7 @@ const TestCases: React.FC<TestCasesProps> = () => {
             </Button>
 
             <Button
-              className="button"
+              className="button btn-custom"
               type="button"
               disabled={isSubmitting}
               onClick={() => handleButtonClick("confirm")}
@@ -125,7 +125,7 @@ const TestCases: React.FC<TestCasesProps> = () => {
             </Button>
 
             <Button
-              className="button"
+              className="button btn-custom"
               type="button"
               disabled={isSubmitting}
               onClick={() => handleButtonClick("prompt")}
@@ -144,7 +144,7 @@ const TestCases: React.FC<TestCasesProps> = () => {
               placeholder="Enter XRAY Test Sets"
             />
             <Button
-              className="button"
+              className="button btn-custom"
               onClick={handleAdd}
               type="button"
               disabled={isSubmitting}
@@ -164,7 +164,7 @@ const TestCases: React.FC<TestCasesProps> = () => {
               placeholder="Enter your prompt"
             />
             <Button
-              className="button"
+              className="button btn-custom"
               onClick={handleRegenerate}
               type="button"
               disabled={isSubmitting}

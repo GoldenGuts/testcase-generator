@@ -49,7 +49,10 @@ const TestCasesAccordion: React.FC<TestCasesAccordionProps> = ({
     setTestCasesData(updatedTestCases);
   };
 
-  const handleUpdateSummary = (index: number, value: string) => {
+  const handleUpdateSummary = (
+    index: number,
+    value: string
+  ) => {
     const updatedTestCases = [...testCasesData];
     updatedTestCases[index].summary = value;
     setTestCasesData(updatedTestCases);
@@ -67,9 +70,8 @@ const TestCasesAccordion: React.FC<TestCasesAccordionProps> = ({
             <Accordion.Header
               suppressContentEditableWarning={true}
               contentEditable={true}
-              onBlur={(e) =>
-                handleUpdateSummary(index, e.target.textContent || "")
-              }
+              onBlur={(e) => handleUpdateSummary(index, e.target.textContent || "")}
+
               onClick={() =>
                 setActiveKey(activeKey === `${index}` ? null : `${index}`)
               }
@@ -78,6 +80,7 @@ const TestCasesAccordion: React.FC<TestCasesAccordionProps> = ({
               {testCase.summary}
             </Accordion.Header>
             <Button
+              className="btn-custom"
               style={{ marginLeft: "15px" }}
               variant="outline-danger"
               size="sm"

@@ -106,7 +106,7 @@ const Settings: React.FC<SettingsProps> = () => {
                 />
               </Form.Group>
 
-              <Button className="ml-5" type="submit">
+              <Button className="ml-5 btn-custom" type="submit">
                 Authenticate
               </Button>
             </Form>

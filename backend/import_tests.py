@@ -29,7 +29,7 @@ class XrayImport:
         template = {
             "testtype": "Manual",
             "fields": {
-                "project": {"key": "BP"}
+                "project": {"key": jira_issue_id.split("-")[0]},
             },
             "update": {
                 "issuelinks": [

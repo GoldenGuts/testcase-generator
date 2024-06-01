@@ -76,6 +76,9 @@ const Home: React.FC<Props> = () => {
       <Button className="ml-5 mr-5 btn-custom" type="submit" disabled={isLoading}>
         Get Test Cases
       </Button>
+      <Button className="ml-5 mr-5 btn-custom" type="submit" disabled={isLoading}>
+        Get Workflow
+      </Button>
 
     </Form>
   );

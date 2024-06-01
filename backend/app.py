@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, make_response
 from get_test_cases import JiraService
 from import_tests import XrayImport
-from add_fields import AddFields
+from jira_helper import JiraHelper
 import jwt, json, os
 import datetime
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
@@ -126,12 +126,16 @@ def add_fields():
     label = data["label"]
     component = data["component"]
     
-    print(label)
-    
-    AddFields(jira_email, jira_token).add_fields(key, component, label)
-    
+    try:
+        JiraHelper(jira_email, jira_token).add_fields(key, component, label)
+    except PermissionError as e:
+        return jsonify({"error": str(e)}), 403
+    except Exception as e:
+        return jsonify({"error": "Failed to update issue", "details": str(e)}), 500
+
     response = {'message': 'Issue Updated Successfully'}
     return jsonify(response), 200
+
 
 @app.route("/authenticate", methods=["POST"])
 def authenticateJira():
@@ -160,6 +164,30 @@ def authenticateJira():
     my_jwt = create_jwt(user_credentials)
     response = {'message': 'Successfully created JWT', 'jwt': my_jwt, 'user': displayName}
     return jsonify(response), 200
+
+@app.route("/get-jira-labels", methods=["GET"])
+def get_jira_labels():
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith('Bearer '):
+        return jsonify({"error": "Authorization header missing or invalid"}), 401
+
+    token = auth_header.split(' ')[1]
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+    except ExpiredSignatureError:
+        return jsonify({"error": "Token expired"}), 401
+    except InvalidTokenError:
+        return jsonify({"error": "Invalid token"}), 401
+    
+    jira_email = payload["email"]
+    jira_token = payload["token"]
+
+    try:
+        labels = JiraHelper(jira_email, jira_token).get_labels()
+        response = {'message': 'Successfully retrieved labels', 'labels': labels}
+        return jsonify(response), 200
+    except Exception as e:
+        return jsonify({"error": "Error retrieving Jira labels"}), 500
 
 @app.route("/authenticate-xray", methods=["POST"])
 def authenticate_xray():

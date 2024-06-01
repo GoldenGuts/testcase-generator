@@ -10,6 +10,7 @@ interface Step {
 
 interface TestCase {
   summary: string;
+  description: string;
   steps: Step[];
 }
 
@@ -49,12 +50,15 @@ const TestCasesAccordion: React.FC<TestCasesAccordionProps> = ({
     setTestCasesData(updatedTestCases);
   };
 
-  const handleUpdateSummary = (
-    index: number,
-    value: string
-  ) => {
+  const handleUpdateSummary = (index: number, value: string) => {
     const updatedTestCases = [...testCasesData];
     updatedTestCases[index].summary = value;
+    setTestCasesData(updatedTestCases);
+  };
+
+  const handleUpdateDescription = (index: number, value: string) => {
+    const updatedTestCases = [...testCasesData];
+    updatedTestCases[index].description = value;
     setTestCasesData(updatedTestCases);
   };
 
@@ -70,8 +74,9 @@ const TestCasesAccordion: React.FC<TestCasesAccordionProps> = ({
             <Accordion.Header
               suppressContentEditableWarning={true}
               contentEditable={true}
-              onBlur={(e) => handleUpdateSummary(index, e.target.textContent || "")}
-
+              onBlur={(e) =>
+                handleUpdateSummary(index, e.target.textContent || "")
+              }
               onClick={() =>
                 setActiveKey(activeKey === `${index}` ? null : `${index}`)
               }
@@ -91,6 +96,18 @@ const TestCasesAccordion: React.FC<TestCasesAccordionProps> = ({
           </Card.Header>
           <Accordion.Collapse eventKey={`${index}`}>
             <Card.Body>
+              <div>
+                  <span className="fw-bold">Description: </span>
+                  <span
+                    suppressContentEditableWarning={true}
+                    contentEditable={true}
+                    onBlur={(e) =>
+                      handleUpdateDescription(index, e.target.textContent || "")
+                    }
+                  >
+                    {testCase.description}
+                  </span>
+              </div>
               <Table striped bordered hover>
                 <thead>
                   <tr>

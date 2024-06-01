@@ -49,6 +49,7 @@ class JiraService :
                 [
                         {
                             "summary": "This will be test name for test case 1",
+                            "description": "This will be test description for test case 1",
                             "steps": [
                                 {
                                     "action": "some action related to test case 1 for step 1",
@@ -69,6 +70,7 @@ class JiraService :
                         },
                         {
                             "summary": "This will be test name for test case 2",
+                            "description": "This will be test description for test case 1",
                             "steps": [
                                 {
                                     "action": "some action related to test case 2 for step 1",

@@ -30,6 +30,9 @@ class XrayImport:
             "testtype": "Manual",
             "fields": {
                 "project": {"key": jira_issue_id.split("-")[0]},
+                "priority": {
+                    "id": "10001"
+                }
             },
             "update": {
                 "issuelinks": [
@@ -45,7 +48,7 @@ class XrayImport:
         }
         
         return [
-            {**template, "fields": {**template["fields"], "summary": test_case["summary"]}, "steps": test_case["steps"]}
+            {**template, "fields": {**template["fields"], "summary": test_case["summary"]}, "description": test_case["description"], "steps": test_case["steps"]}
             for test_case in json_data
         ]
 

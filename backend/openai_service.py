@@ -21,7 +21,7 @@ class OpenAIService:
         result = []
         try:
             res = openai.ChatCompletion.create(
-                engine="Nebula-gpt-4",
+                engine="qease-gpt-4o",
                 messages = [{"role":"system","content":system_prompt},{"role":"user", "content": user_prompt}],
                 temperature=0.0,
                 max_tokens= 1000,

@@ -48,7 +48,7 @@ class XrayImport:
         }
         
         return [
-            {**template, "fields": {**template["fields"], "summary": test_case["summary"]}, "description": test_case["description"], "steps": test_case["steps"]}
+            {**template, "fields": {**template["fields"], "summary": test_case["summary"], "description": test_case["description"] + "\n *Precondition:* " + test_case["precondition"]}, "steps": test_case["steps"]}
             for test_case in json_data
         ]
 

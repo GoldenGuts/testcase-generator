@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import axios from "../axios";
 import { Button, Form } from "react-bootstrap";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 import ClipLoader from "react-spinners/ClipLoader";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   // text: string; // Define the prop type as string
@@ -15,12 +15,10 @@ const Home: React.FC<Props> = () => {
     jira_issue_id: string;
   }
 
-
-
   const [formData, setFormData] = useState<FormData>({
     jira_issue_id: "",
   });
-  const [isLoading, setLoading] = useState<boolean>(false)
+  const [isLoading, setLoading] = useState<boolean>(false);
   // State for response from the backend (optional)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   // const [response, setResponse] = useState<any>(null);
@@ -30,30 +28,59 @@ const Home: React.FC<Props> = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const getWorkflow = async () => {
+    console.log("getWorkflow called!");
+    setLoading(true);
+    try {
+      const response = await axios.post<unknown>(
+        "/get_workflow",
+        {
+          issue_id: [formData.jira_issue_id],
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("jira")}`,
+          },
+        }
+      );
+
+      console.log("Success! Response:", response.data);
+      localStorage.setItem("workflow", response.data as string);
+      navigate("/workflow");
+    } catch (error) {
+      console.error("Error:", error);
+      // Handle errors appropriately (e.g., display error message to the user)
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log("handleSubmit called!");
-    setLoading(true)
+    setLoading(true);
     try {
       console.log(formData);
       const response = await axios.post<unknown>(
         "/get_test_cases",
         {
-          "issue_id": [formData.jira_issue_id]
-        }, {
-        headers: {
-          'Authorization': `Bearer ${Cookies.get("jira")}`
+          issue_id: [formData.jira_issue_id],
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("jira")}`,
+          },
         }
-      }
       );
 
-      console.log("Success! Response:", response.data); 
-      localStorage.setItem('testcases', response.data as string);
-      localStorage.setItem('jira_issue_id', formData.jira_issue_id);
+      console.log("Success! Response:", response.data);
+      localStorage.setItem("testcases", response.data as string);
+      localStorage.setItem("jira_issue_id", formData.jira_issue_id);
 
-      navigate('/testcases');
-    } catch (error) {
-      console.error("Error:", error);
+      navigate("/testcases");
+    } catch (error: any) {
+      console.error("Error:", error.response.data.details);
+      alert("Error: " + error.response.data.error);
       // Handle errors appropriately (e.g., display error message to the user)
     } finally {
       setLoading(false);
@@ -63,7 +90,10 @@ const Home: React.FC<Props> = () => {
   return (
     <Form onSubmit={handleSubmit}>
       <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-        <Form.Label>Enter Jira Issue ID {isLoading ? <ClipLoader size={20} color="#36d7b7" /> : null} </Form.Label>
+        <Form.Label>
+          Enter Jira Issue ID{" "}
+          {isLoading ? <ClipLoader size={20} color="#36d7b7" /> : null}{" "}
+        </Form.Label>
         <Form.Control
           type="text"
           placeholder="key-id"
@@ -73,13 +103,21 @@ const Home: React.FC<Props> = () => {
         />
       </Form.Group>
 
-      <Button className="ml-5 mr-5 btn-custom" type="submit" disabled={isLoading}>
+      <Button
+        className="ml-5 mr-5 btn-custom"
+        type="submit"
+        disabled={isLoading}
+        style={{ marginRight: "20px" }}
+      >
         Get Test Cases
       </Button>
-      <Button className="ml-5 mr-5 btn-custom" type="submit" disabled={isLoading}>
+      <Button
+        className="ml-5 mr-5 btn-custom"
+        onClick={getWorkflow}
+        disabled={isLoading}
+      >
         Get Workflow
       </Button>
-
     </Form>
   );
 };

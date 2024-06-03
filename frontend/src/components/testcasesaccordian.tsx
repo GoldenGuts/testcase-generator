@@ -11,6 +11,7 @@ interface Step {
 interface TestCase {
   summary: string;
   description: string;
+  precondition: string;
   steps: Step[];
 }
 
@@ -62,6 +63,12 @@ const TestCasesAccordion: React.FC<TestCasesAccordionProps> = ({
     setTestCasesData(updatedTestCases);
   };
 
+  const handleUpdatePrecondition = (index: number, value: string) => {
+    const updatedTestCases = [...testCasesData];
+    updatedTestCases[index].precondition = value;
+    setTestCasesData(updatedTestCases);
+  };
+
   return (
     <Accordion
       activeKey={activeKey}
@@ -106,6 +113,18 @@ const TestCasesAccordion: React.FC<TestCasesAccordionProps> = ({
                     }
                   >
                     {testCase.description}
+                  </span>
+              </div>
+              <div>
+                  <span className="fw-bold">Precondition: </span>
+                  <span
+                    suppressContentEditableWarning={true}
+                    contentEditable={true}
+                    onBlur={(e) =>
+                      handleUpdatePrecondition(index, e.target.textContent || "")
+                    }
+                  >
+                    {testCase.precondition}
                   </span>
               </div>
               <Table striped bordered hover>

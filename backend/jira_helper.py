@@ -10,44 +10,43 @@ class JiraHelper:
         self.token = jira_token
 
     def add_fields(self, issue_key, component, labels):
+        print(f"Updating JIRA issue {issue_key}...")
 
-        print(f"Updating JIRA issue {issue_key} with component '{component}' and labels '{labels}'...")
         jiraOptions = {'server': self.server}
-        user_email = self.email
-        jira_token = self.token
-        jira = JIRA(options=jiraOptions, basic_auth=(user_email, jira_token))
-
-        new_components = [{'name': component}]
+        jira = JIRA(options=jiraOptions, basic_auth=(self.email, self.token))
 
         try:
             issue = jira.issue(issue_key)
 
-            try:
-                issue.update(fields={'components': new_components})
-                print(f"Component '{component}' updated successfully.")
-            except JIRAError as e:
-                if 'components' in e.response.json().get('errors', {}):
-                    print(f"Error updating component: {e.response.json()['errors']['components']}")
-                    raise PermissionError(e.response.json()['errors']['components'])
-                else:
-                    print(f"Error updating component: {e}")
-                    raise
+            if component:
+                try:
+                    new_components = [{'name': component}]
+                    issue.update(fields={'components': new_components})
+                    print(f"Component '{component}' updated successfully.")
+                except JIRAError as e:
+                    if 'components' in e.response.json().get('errors', {}):
+                        print(f"Error updating component: {e.response.json()['errors']['components']}")
+                        raise PermissionError(e.response.json()['errors']['components'])
+                    else:
+                        print(f"Error updating component: {e}")
+                        raise
 
-            try:
-                issue.update(fields={"labels": labels})
-                print(f"Labels '{labels}' updated successfully.")
-            except JIRAError as e:
-                if 'labels' in e.response.json().get('errors', {}):
-                    print(f"Error updating labels: {e.response.json()['errors']['labels']}")
-                    raise PermissionError(e.response.json()['errors']['labels'])
-                else:
-                    print(f"Error updating labels: {e}")
-                    raise
+            if len(labels) > 0:
+                try:
+                    issue.update(fields={"labels": labels})
+                    print(f"Labels '{labels}' updated successfully.")
+                except JIRAError as e:
+                    if 'labels' in e.response.json().get('errors', {}):
+                        print(f"Error updating labels: {e.response.json()['errors']['labels']}")
+                        raise PermissionError(e.response.json()['errors']['labels'])
+                    else:
+                        print(f"Error updating labels: {e}")
+                        raise
 
             print(f"JIRA issue {issue_key} setting to In Progress...")
-            jira.transition_issue(issue_key, 51)
-            print(f"JIRA issue {issue_key} updated.")
-        
+            jira.transition_issue(issue, 51)  # Assumes '51' is the ID for "In Progress"
+            print(f"JIRA issue {issue_key} updated to In Progress.")
+
         except JIRAError as e:
             print(f"Failed to update JIRA issue {issue_key}: {e}")
             raise
@@ -84,3 +83,27 @@ class JiraHelper:
 
         print(f"Total labels retrieved: {len(labels)}")
         return labels
+    
+    def set_workflow(self, issue_key, workflow):
+        print(f"Updating JIRA issue {issue_key} with workflow")
+        jiraOptions = {'server': self.server}
+        user_email = self.email
+        jira_token = self.token
+        jira = JIRA(options=jiraOptions, basic_auth=(user_email, jira_token)) 
+        try:
+            issue = jira.issue(issue_key)
+            issue.update(fields={'customfield_10059': workflow})
+            print(f"JIRA issue {issue_key} updated with workflow '{workflow}'")
+        except JIRAError as e:
+            print(f"Failed to update JIRA issue {issue_key}: {e}")
+            raise
+        
+    def get_components(self, project_key):
+        print(f"Getting components for project {project_key}")
+        jiraOptions = {'server': self.server}
+        user_email = self.email
+        jira_token = self.token
+        jira = JIRA(options=jiraOptions, basic_auth=(user_email, jira_token))
+        components = jira.project_components(project_key)
+        components_names = [component.name for component in components] 
+        return components_names

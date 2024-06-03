@@ -3,6 +3,7 @@ import BlankLayout from './components/layout/blank';
 import Home from './components/home'; // Import if needed
 import Settings from './components/settings';
 import TestCases from './components/testcases';
+import Workflow from './components/workflow';
 import XRayFields from './components/addfields';
 import Success from './components/success';
 
@@ -21,6 +22,11 @@ const routes = [
         path: '/testcases',
         exact: true,
         element: <TestCases />,
+    },
+    {
+        path: '/workflow',
+        exact: true,
+        element: <Workflow />,
     },
     {
         path: '/add-fields',

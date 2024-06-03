@@ -67,18 +67,45 @@ def get_test_cases():
     except InvalidTokenError:
         return jsonify({"error": "Invalid token"}), 401
 
-    print(f"Header Received: {payload}")
+    jira_email = payload["email"]
+    jira_token = payload["token"]
+
+    data = request.get_json()
+    jira_issue_id = data.get("issue_id")
+    system_prompt = data.get("system_prompt", "")
+    user_prompt = data.get("user_prompt", "As a quality engineer, I need to create XRay test cases for a desktop application named Litera Secure Share.")
+    
+    try:
+        response = JiraService(jira_email, jira_token).start_generating(jira_issue_id, system_prompt, user_prompt)
+        return jsonify(response), 200
+    except Exception as e:
+        return jsonify({"error": "Failed to generate test cases, details in console!", "details": str(e)}), 500
+
+
+@app.route("/get_workflow", methods=["POST"])
+def get_workflow():
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith('Bearer '):
+        return jsonify({"error": "Authorization header missing or invalid"}), 401
+
+    token = auth_header.split(' ')[1]  # Extract the token part of the header
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+    except ExpiredSignatureError:
+        return jsonify({"error": "Token expired"}), 401
+    except InvalidTokenError:
+        return jsonify({"error": "Invalid token"}), 401
 
     jira_email = payload["email"]
     jira_token = payload["token"]
 
     data = request.get_json()
-    print(f"Data Received: {data}")
+    
     jira_issue_id = data.get("issue_id")
     system_prompt = data.get("system_prompt", "")
-    user_prompt = data.get("user_prompt", "As a quality engineer, I need to create XRay test cases for a desktop application named Litera Secure Share.")
+    user_prompt = data.get("user_prompt", "As a quality engineer, ")
     
-    response = JiraService(jira_email, jira_token).start_generating(jira_issue_id, system_prompt, user_prompt)
+    response = JiraService(jira_email, jira_token).start_generating(jira_issue_id, system_prompt, user_prompt, select_prompt="workflow")
     return jsonify(response), 200
 
 @app.route("/post_test_cases", methods=["POST"])
@@ -104,6 +131,37 @@ def post_test_cases():
     except Exception as e:
         return make_response(jsonify({"error": "XRay Authentication Failed!"}), 401)
 
+@app.route("/update_jira_workflow", methods=["POST"])
+def update_jira_workflow():
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith('Bearer '):
+        return jsonify({"error": "Authorization header missing or invalid"}), 401
+
+    token = auth_header.split(' ')[1]
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+    except ExpiredSignatureError:
+        return jsonify({"error": "Token expired"}), 401
+    except InvalidTokenError:
+        return jsonify({"error": "Invalid token"}), 401
+
+    jira_email = payload["email"]
+    jira_token = payload["token"] 
+    
+    try:
+        data = request.json
+        jira_issue_id = data.get('jira_issue_id')
+        workflow = data.get('workflow')
+        JiraHelper(jira_email, jira_token).set_workflow(jira_issue_id, workflow)
+    except PermissionError as e:
+        return jsonify({"error": str(e)}), 403
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return jsonify({"error": "Failed to update issue", "details": str(e)}), 500
+    
+    response = {'message': 'Workflow Updated Successfully'}
+    return jsonify(response), 200
+
 @app.route("/add_fields", methods=["POST"])
 def add_fields():
     auth_header = request.headers.get("Authorization")
@@ -122,12 +180,16 @@ def add_fields():
     jira_token = payload["token"]
     
     data = request.json
-    key = data["key"]
-    label = data["label"]
-    component = data["component"]
+    key = request.args.get('key')
+    labels = data.get("labels", [])
+    component = data.get("component", None)
+    
+    print(f"Adding fields to JIRA issue {key}...")
+    print(f"Label: {labels}")
+    print(f"Component: {component}")
     
     try:
-        JiraHelper(jira_email, jira_token).add_fields(key, component, label)
+        JiraHelper(jira_email, jira_token).add_fields(key, component, labels)
     except PermissionError as e:
         return jsonify({"error": str(e)}), 403
     except Exception as e:
@@ -188,6 +250,31 @@ def get_jira_labels():
         return jsonify(response), 200
     except Exception as e:
         return jsonify({"error": "Error retrieving Jira labels"}), 500
+
+@app.route("/get-jira-components", methods=["GET"])
+def get_jira_components():
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith('Bearer '):
+        return jsonify({"error": "Authorization header missing or invalid"}), 401
+
+    token = auth_header.split(' ')[1]
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+    except ExpiredSignatureError:
+        return jsonify({"error": "Token expired"}), 401
+    except InvalidTokenError:
+        return jsonify({"error": "Invalid token"}), 401
+    
+    jira_email = payload["email"]
+    jira_token = payload["token"]
+    project_id = request.args.get('project_id')
+
+    try:
+        components = JiraHelper(jira_email, jira_token).get_components(project_id)
+        response = {'message': 'Successfully retrieved components', 'components': components}
+        return jsonify(response), 200
+    except Exception as e:
+        return jsonify({"error": "Error retrieving Jira components", "details": str(e)}), 500
 
 @app.route("/authenticate-xray", methods=["POST"])
 def authenticate_xray():

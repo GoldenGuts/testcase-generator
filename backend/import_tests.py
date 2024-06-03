@@ -17,12 +17,6 @@ LABEL_NAME = 'GenAi_testcase'
 AUTH_TOKEN_FILE = "auth_token.json"
 
 class XrayImport:
-        
-    # loading whatevere we got from openai
-    def load_json_data(self, file_path):
-        print("Loading test case data...")
-        with open(file_path, 'r') as file:
-            return json.load(file)
 
     def format_test_cases(self, json_data, jira_issue_id, xray_test_sets):
         print("Formatting test cases...")
@@ -53,9 +47,7 @@ class XrayImport:
         ]
 
     # xray
-    
-    # will do in frontend
-    
+        
     def authenticate(self, client_id, secret):
         print("Authenticating with Xray...")
         payload = {"client_id": client_id, "client_secret": secret}
@@ -98,51 +90,4 @@ class XrayImport:
                 if data.get('status') == 'successful':
                     print("Job completed successfully.")
                     return [issue['key'] for issue in data['result']['issues']]
-            time.sleep(5) 
-
-    def add_fields(self, issue_key, component, labels):
-        print(f"Updating JIRA issue {issue_key} with component '{component}' and label '{labels}'...")
-        jiraOptions = {'server': self.server}
-        user_email = self.email
-        jira_token = self.token
-        jira = JIRA(options=jiraOptions, basic_auth=(user_email, jira_token))
-
-        new_components = [{'name': component}]
-        
-        issue = jira.issue(issue_key)
-
-        issue.update(fields={'components': new_components})
-
-        current_labels = issue.fields.labels
-        for label in labels:
-            if label not in current_labels:
-                current_labels.append(label)
-                issue.update(fields={"labels": current_labels})
-        
-        print(f"JIRA issue {issue_key} setting to In Progress...")
-        jira.transition_issue(issue_key, 51)
-        print(f"JIRA issue {issue_key} updated.")
-        
-
-    # if __name__ == '__main__':
-    #     auth_token = authenticate()
-    #     json_data = load_json_data(JSON_FILE_PATH)
-    #     formatted_data = format_test_cases(json_data)
-    #     job_id = post_test_cases(auth_token, formatted_data)
-    #     keys = get_job_keys(auth_token, job_id)
-    #     for key in keys:
-    #         add_fields(key, COMPONENT_NAME, LABEL_NAME)
-    #     add_fields("BP-3536", COMPONENT_NAME, LABEL_NAME)
-
-
-# auth api for openai
-# get for get test cases > jira issue id (prompt? maybe)
-# auth api for xray
-# to post test cases, add all the labels, components, set the jira status
-
-# Input field to ask for the jira issue id > which is to be used for test case generation
-# Output field to show the test cases generated
-# Confirm or Regenerate button
-# If Regenerate, then regenerate the test cases
-# If Confirm, then ask for Component Name and Label
-# Show the test cases keys
+            time.sleep(5)

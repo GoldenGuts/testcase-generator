@@ -12,6 +12,7 @@ const TestCasesAccordionWrapper: React.FC = () => {
     } catch (error) {
       console.error("Parsing error:", error);
       parsedJSON = []; // Default to an empty array in case of error
+      alert("Error: Invalid test cases data found in local storage. Please try again.");
     }
   }
 

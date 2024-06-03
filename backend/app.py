@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, make_response
+from backend.helper import extract_and_repair_json
 from get_test_cases import JiraService
 from import_tests import XrayImport
 from jira_helper import JiraHelper
@@ -77,7 +78,8 @@ def get_test_cases():
     
     try:
         response = JiraService(jira_email, jira_token).start_generating(jira_issue_id, system_prompt, user_prompt)
-        return jsonify(response), 200
+        repaired_json = extract_and_repair_json(response)
+        return jsonify(repaired_json), 200
     except Exception as e:
         return jsonify({"error": "Failed to generate test cases, details in console!", "details": str(e)}), 500
 

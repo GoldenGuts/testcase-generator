@@ -1,6 +1,6 @@
 import os
 from jira import JIRA
-
+import re, json
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -10,7 +10,7 @@ from openai_service import OpenAIService
 prompt_for_test_cases = '''
     The objective is to cover the following acceptance criteria: {{ac}} and validate the functionality of {{summary}} with {{description}}.
     Refer to the workflow : {{workflow}} to add more details or preconditions to the test case if necessary. {{user_prompt}}
-    Please write the test cases (the number of test cases should be atleast 3).
+    Please write the test cases (give maximum number of test cases).
     only provide data if required, otherwise omit the data key.
     just give as mentioned below without any formational changes.
     [

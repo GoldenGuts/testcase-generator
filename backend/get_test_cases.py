@@ -12,7 +12,7 @@ prompt_for_test_cases = '''
     Refer to the workflow : {{workflow}} to add more details or preconditions to the test case if necessary. {{user_prompt}}
     Please write the test cases (give maximum number of test cases).
     only provide data if required, otherwise omit the data key.
-    just give as mentioned below without any formational changes.
+    just give as mentioned below without any formational changes. remove all extra spaces and new lines and junk.
     [
             {
                 "summary": "This will be test name for test case 1",

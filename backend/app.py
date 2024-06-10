@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, make_response
-from backend.helper import extract_and_repair_json
+from helper import extract_and_repair_json
 from get_test_cases import JiraService
 from import_tests import XrayImport
 from jira_helper import JiraHelper

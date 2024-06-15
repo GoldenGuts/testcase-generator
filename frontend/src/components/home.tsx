@@ -116,7 +116,7 @@ const Home: React.FC<Props> = () => {
         onClick={getWorkflow}
         disabled={isLoading}
       >
-        Get Workflow
+        Get Test Strategy
       </Button>
     </Form>
   );

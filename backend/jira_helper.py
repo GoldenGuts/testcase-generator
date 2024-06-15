@@ -92,7 +92,8 @@ class JiraHelper:
         jira = JIRA(options=jiraOptions, basic_auth=(user_email, jira_token)) 
         try:
             issue = jira.issue(issue_key)
-            issue.update(fields={'customfield_10059': workflow})
+            old_workflow = issue.fields.customfield_10059
+            issue.update(fields={'customfield_10059': old_workflow+'\n'+workflow})
             print(f"JIRA issue {issue_key} updated with workflow '{workflow}'")
         except JIRAError as e:
             print(f"Failed to update JIRA issue {issue_key}: {e}")

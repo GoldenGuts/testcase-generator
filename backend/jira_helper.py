@@ -94,6 +94,11 @@ class JiraHelper:
             issue = jira.issue(issue_key)
             old_workflow = issue.fields.customfield_10059
             issue.update(fields={'customfield_10059': old_workflow+'\n'+workflow})
+
+            # set genai label
+            if "GenAI_TestStrategy" not in issue.fields.labels:
+                issue.update(fields={"labels": issue.fields.labels + ["GenAI_TestStrategy"]})
+                
             print(f"JIRA issue {issue_key} updated with workflow '{workflow}'")
         except JIRAError as e:
             print(f"Failed to update JIRA issue {issue_key}: {e}")

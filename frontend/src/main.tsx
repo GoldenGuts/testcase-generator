@@ -25,7 +25,7 @@ const getTooltipMessage = () => {
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <div className="navbar">
-      <img src="/new-logo.png" alt="Logo for Litera"  className="navbar-logo" />
+      <img src="/new-logo.png" alt="Logo for Litera" className="navbar-logo" />
       <div className="navbar-icon">
         <Nav.Link href="/">
           <i className="fa-solid fa-house"></i>
@@ -46,6 +46,11 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         </OverlayTrigger>
       </div>
     </div>
+    {process.env.REACT_APP_ENABLE_VECTOR_API === 'true' && !Cookies.get("vectorization_api_key") && (
+      <div style={{ color: "red", textAlign: "center", marginTop: "20px" }}>
+        Warning: Vectorization API key is not present.
+      </div>
+    )}
     <AppRouter></AppRouter>
   </React.StrictMode>
 );

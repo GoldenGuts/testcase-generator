@@ -23,6 +23,8 @@ services:
       - "3000:3000"
     volumes:
       - ./frontend:/app
+    environment:
+      - REACT_APP_ENABLE_VECTOR_API=true
 
     depends_on:
       - backend

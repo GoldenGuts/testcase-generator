@@ -1,3 +1,4 @@
+import time
 from flask import Flask, request, jsonify, make_response
 from helper import extract_and_repair_json
 from get_test_cases import JiraService
@@ -319,18 +320,29 @@ def store_vectorization_key():
         return jsonify({"error": "No vectorization API key provided"}), 400
 
     # Store the vectorization key in the in-memory dictionary
-    vectorization_keys['key'] = vectorization_api_key
+    vectorization_keys['key'] = {
+        'value': vectorization_api_key,
+        'timestamp': time.time()
+    }
 
     return jsonify({"message": "Vectorization API key stored successfully"}), 200
 
 @app.route('/get-vectorization-key', methods=['GET'])
 def get_vectorization_key():
-    vectorization_api_key = vectorization_keys.get('key')
+    key_data = vectorization_keys.get('key')
     
-    if vectorization_api_key:
-        return jsonify({"vectorization_api_key": vectorization_api_key}), 200
-    else:
+    if not key_data:
         return jsonify({"error": "No vectorization API key found"}), 404
+    
+    current_time = time.time()
+    key_timestamp = key_data['timestamp']
+    time_elapsed = current_time - key_timestamp
+
+    # Check if the key has expired (30 minutes = 1800 seconds)
+    if time_elapsed > 1800:
+        return jsonify({"error": "Vectorization API key has expired"}), 403
+
+    return jsonify({"vectorization_api_key": key_data['value']}), 200
     
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5006, debug=True, use_reloader=False)

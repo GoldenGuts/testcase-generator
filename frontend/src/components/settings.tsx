@@ -42,7 +42,25 @@ const Settings: React.FC<SettingsProps> = () => {
     if (lastUpdateTime) {
       setLastUpdated(lastUpdateTime);
     }
+    const fetchVectorizationKey = async () => {
+      try {
+        const response = await axios.get('/get-vectorization-key');
+        if (response.data.vectorization_api_key) {
+          setVectorizationData({ vectorization_api_key: response.data.vectorization_api_key });
+        }
+      } catch (error: any) {
+        if (error.response && error.response.status === 403) {
+          alert("Vectorization API key has expired");
+        } else {
+          console.error("Error fetching vectorization key", error);
+        }
+      }
+    };
+    fetchVectorizationKey();
+
   }, []);
+
+  
 
   useEffect(() => {
     const cookieValue = Cookies.get("jira");
@@ -60,11 +78,11 @@ const Settings: React.FC<SettingsProps> = () => {
     event.preventDefault();
     try {
       console.log("Data Provided: " + vectorizationData);
-      Cookies.set(
-        "vectorization_api_key",
-        vectorizationData.vectorization_api_key,
-        { expires: 1 / 48 }
-      );
+      // Cookies.set(
+      //   "vectorization_api_key",
+      //   vectorizationData.vectorization_api_key,
+      //   { expires: 1 / 48 }
+      // );
       const updateTime = new Date().toISOString();
       setLastUpdated(updateTime);
       localStorage.setItem("vectorization_api_key_last_updated", updateTime); 

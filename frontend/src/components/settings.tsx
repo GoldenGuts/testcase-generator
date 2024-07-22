@@ -58,7 +58,6 @@ const Settings: React.FC<SettingsProps> = () => {
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
-    setError(null);
     try {
       console.log("Data Provided: " + vectorizationData);
       Cookies.set(
@@ -68,9 +67,14 @@ const Settings: React.FC<SettingsProps> = () => {
       );
       const updateTime = new Date().toISOString();
       setLastUpdated(updateTime);
-      localStorage.setItem("vectorization_api_key_last_updated", updateTime);
+      localStorage.setItem("vectorization_api_key_last_updated", updateTime); 
+
+      await axios.post('/store-vectorization-key', {
+        vectorization_api_key: vectorizationData.vectorization_api_key
+      });
+
     } catch (error) {
-      setError("An unknown error occurred");
+      alert("An unknown error occurred");
     }
   };
 

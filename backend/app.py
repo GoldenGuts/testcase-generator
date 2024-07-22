@@ -17,6 +17,9 @@ CORS(app)
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
+# Temporary in-memory storage
+vectorization_keys = {}
+
 # Setup logging
 if not app.debug:
     handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=1)
@@ -306,6 +309,28 @@ def authenticate_xray():
     except Exception as e:
         print(f"An exception occurred: {e}")
         return make_response(jsonify({"error": "Internal Server Error", "message": str(e)}), 500)
+
+@app.route('/store-vectorization-key', methods=['POST'])
+def store_vectorization_key():
+    data = request.json
+    vectorization_api_key = data.get('vectorization_api_key')
+    
+    if not vectorization_api_key:
+        return jsonify({"error": "No vectorization API key provided"}), 400
+
+    # Store the vectorization key in the in-memory dictionary
+    vectorization_keys['key'] = vectorization_api_key
+
+    return jsonify({"message": "Vectorization API key stored successfully"}), 200
+
+@app.route('/get-vectorization-key', methods=['GET'])
+def get_vectorization_key():
+    vectorization_api_key = vectorization_keys.get('key')
+    
+    if vectorization_api_key:
+        return jsonify({"vectorization_api_key": vectorization_api_key}), 200
+    else:
+        return jsonify({"error": "No vectorization API key found"}), 404
     
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5006, debug=True, use_reloader=False)

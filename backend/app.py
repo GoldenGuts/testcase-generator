@@ -72,16 +72,17 @@ def get_test_cases():
     except InvalidTokenError:
         return jsonify({"error": "Invalid token"}), 401
 
+    data = request.get_json()
+    drsAccessToken = request.cookies.get("jira")
     jira_email = payload["email"]
     jira_token = payload["token"]
 
-    data = request.get_json()
     jira_issue_id = data.get("issue_id")
     system_prompt = data.get("system_prompt", "")
     user_prompt = data.get("user_prompt", "As a quality engineer, I need to create XRay test cases for a desktop application named Litera Secure Share.")
     
     try:
-        response = JiraService(jira_email, jira_token).start_generating(jira_issue_id, system_prompt, user_prompt)
+        response = JiraService(jira_email, jira_token).start_generating(jira_issue_id, system_prompt, user_prompt, drsAccessToken=drsAccessToken)
         repaired_json = extract_and_repair_json(response)
         return jsonify(repaired_json), 200
     except Exception as e:
@@ -338,11 +339,16 @@ def get_vectorization_key():
     key_timestamp = key_data['timestamp']
     time_elapsed = current_time - key_timestamp
 
-    # Check if the key has expired (30 minutes = 1800 seconds)
-    if time_elapsed > 1800:
+    # Check if the key has expired (60 minutes = 3600 seconds)
+    if time_elapsed > 3600:
         return jsonify({"error": "Vectorization API key has expired"}), 403
 
-    return jsonify({"vectorization_api_key": key_data['value']}), 200
+    return key_data['value'], 200
+
+@app.route('/clear-vectorization-key', methods=['DELETE'])
+def clear_vectorization_key():
+    vectorization_keys.pop('key', None)
+    return jsonify({"message": "Vectorization API key cleared successfully"}), 200
     
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5006, debug=True, use_reloader=False)

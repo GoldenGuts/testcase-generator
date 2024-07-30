@@ -31,6 +31,8 @@ const Settings: React.FC<SettingsProps> = () => {
   const [error, setError] = useState<string | null>(null);
   const [displayName, setDisplayName] = useState("");
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+  const [isLoginDisabled, setIsLoginDisabled] = useState(false);
+  const [isSubmitAPIDisabled, setIsSubmitAPIDisabled] = useState(false);
 
   useEffect(() => {
     if (localStorage.getItem("jira_user") !== null) {
@@ -44,23 +46,20 @@ const Settings: React.FC<SettingsProps> = () => {
     }
     const fetchVectorizationKey = async () => {
       try {
-        const response = await axios.get('/get-vectorization-key');
-        if (response.data.vectorization_api_key) {
-          setVectorizationData({ vectorization_api_key: response.data.vectorization_api_key });
+        const response = await axios.get("/get-vectorization-key");
+        if (response.status === 200 && typeof response.data === "string") {
+          setIsSubmitAPIDisabled(true);
         }
       } catch (error: any) {
         if (error.response && error.response.status === 403) {
-          alert("Vectorization API key has expired");
+          console.log("Vectorization API key has expired");
         } else {
           console.error("Error fetching vectorization key", error);
         }
       }
     };
     fetchVectorizationKey();
-
   }, []);
-
-  
 
   useEffect(() => {
     const cookieValue = Cookies.get("jira");
@@ -78,19 +77,16 @@ const Settings: React.FC<SettingsProps> = () => {
     event.preventDefault();
     try {
       console.log("Data Provided: " + vectorizationData);
-      // Cookies.set(
-      //   "vectorization_api_key",
-      //   vectorizationData.vectorization_api_key,
-      //   { expires: 1 / 48 }
-      // );
+
       const updateTime = new Date().toISOString();
       setLastUpdated(updateTime);
-      localStorage.setItem("vectorization_api_key_last_updated", updateTime); 
+      localStorage.setItem("vectorization_api_key_last_updated", updateTime);
 
-      await axios.post('/store-vectorization-key', {
-        vectorization_api_key: vectorizationData.vectorization_api_key
+      await axios.post("/store-vectorization-key", {
+        vectorization_api_key: vectorizationData.vectorization_api_key,
       });
-
+      setIsSubmitAPIDisabled(true);
+      setVectorizationData({ vectorization_api_key: "" });
     } catch (error) {
       alert("An unknown error occurred");
     }
@@ -128,6 +124,23 @@ const Settings: React.FC<SettingsProps> = () => {
     const lastUpdatedTime = new Date(time);
     const differenceInMilliseconds = now.getTime() - lastUpdatedTime.getTime();
     return Math.floor(differenceInMilliseconds / (1000 * 60));
+  };
+
+  const openAuthWindow = () => {
+    const authWindow = window.open(
+      "https://gait-rag-services-poc.azurewebsites.net/api/v1/authenticate",
+      "authWindow",
+      "width=600,height=600"
+    );
+
+    setIsLoginDisabled(true);
+
+    const authWindowInterval = setInterval(() => {
+      if (authWindow?.closed) {
+        clearInterval(authWindowInterval);
+        setIsLoginDisabled(false);
+      }
+    }, 1000);
   };
 
   return (
@@ -182,10 +195,21 @@ const Settings: React.FC<SettingsProps> = () => {
         </Row>
         {process.env.REACT_APP_ENABLE_VECTOR_API === "true" && (
           <Row className="pt-5">
+            {!isSubmitAPIDisabled && (
+              <div
+                style={{
+                  color: "red",
+                  textAlign: "center",
+                  marginTop: "20px",
+                }}
+              >
+                Warning: Vectorization API key is not present.
+              </div>
+            )}
             <Col>
               <Form onSubmit={handleVectorizationAPIKeySubmission}>
                 <h3 className="mb-4 form-heading">
-                  Vectorization API Key - Expires in 15-30mins
+                  Vectorization API Key - Expires in 1hr
                 </h3>
                 {lastUpdated && (
                   <h6 className="last-updated">
@@ -208,9 +232,39 @@ const Settings: React.FC<SettingsProps> = () => {
                   />
                 </Form.Group>
 
-                <Button className="ml-5 btn-custom" type="submit">
-                  Add Vectorization API Key
-                </Button>
+                <Container className="d-flex justify-content-center align-items-center">
+                  <Row>
+                    <Col className="">
+                      <Button
+                        className="btn-custom"
+                        onClick={openAuthWindow}
+                        disabled={isLoginDisabled}
+                      >
+                        Get API Key
+                      </Button>
+                    </Col>
+                    <Col className="">
+                      <Button
+                        className="btn-custom"
+                        type="submit"
+                        disabled={isSubmitAPIDisabled}
+                      >
+                        Submit API Key
+                      </Button>
+                    </Col>
+                    <Col className="">
+                      <Button
+                        className="btn-custom"
+                        onClick={() => {
+                          axios.delete("/clear-vectorization-key");
+                          setIsSubmitAPIDisabled(false);
+                        }}
+                      >
+                        Reset API Key
+                      </Button>
+                    </Col>
+                  </Row>
+                </Container>
               </Form>
             </Col>
           </Row>

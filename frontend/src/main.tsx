@@ -46,11 +46,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         </OverlayTrigger>
       </div>
     </div>
-    {process.env.REACT_APP_ENABLE_VECTOR_API === 'true' && !Cookies.get("vectorization_api_key") && (
-      <div style={{ color: "red", textAlign: "center", marginTop: "20px" }}>
-        Warning: Vectorization API key is not present.
-      </div>
-    )}
     <AppRouter></AppRouter>
   </React.StrictMode>
 );

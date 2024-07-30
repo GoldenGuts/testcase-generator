@@ -147,7 +147,7 @@ const TestCases: React.FC<TestCasesProps> = () => {
               className="button btn-custom"
               onClick={handleAdd}
               type="button"
-              disabled={isSubmitting}
+              disabled={isSubmitting || inputValue === ""}
             >
               Post to Jira
             </Button>

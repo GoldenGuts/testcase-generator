@@ -78,11 +78,10 @@ def get_test_cases():
     jira_token = payload["token"]
 
     jira_issue_id = data.get("issue_id")
-    system_prompt = data.get("system_prompt", "")
-    user_prompt = data.get("user_prompt", "As a quality engineer, I need to create XRay test cases for a desktop application named Litera Secure Share.")
+    user_prompt = data.get("user_prompt", "")
     
     try:
-        response = JiraService(jira_email, jira_token).start_generating(jira_issue_id, system_prompt, user_prompt, drsAccessToken=drsAccessToken)
+        response = JiraService(jira_email, jira_token).start_generating(jira_issue_id, user_prompt, drsAccessToken=drsAccessToken)
         repaired_json = extract_and_repair_json(response)
         return jsonify(repaired_json), 200
     except Exception as e:
@@ -109,10 +108,9 @@ def get_workflow():
     data = request.get_json()
     
     jira_issue_id = data.get("issue_id")
-    system_prompt = data.get("system_prompt", "")
-    user_prompt = data.get("user_prompt", "As a quality engineer, ")
+    user_prompt = data.get("user_prompt", "")
     
-    response = JiraService(jira_email, jira_token).start_generating(jira_issue_id, system_prompt, user_prompt, select_prompt="workflow")
+    response = JiraService(jira_email, jira_token).start_generating(jira_issue_id, user_prompt, select_prompt="workflow")
     return jsonify(response), 200
 
 @app.route("/post_test_cases", methods=["POST"])

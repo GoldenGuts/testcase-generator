@@ -7,61 +7,15 @@ load_dotenv()
 
 from openai_service import OpenAIService
 
-prompt_for_test_cases = '''
-    The objective is to cover the following acceptance criteria: {{ac}} and validate the functionality of {{summary}} with {{description}}.
-    Refer to the workflow : {{workflow}} to add more details or preconditions to the test case if necessary. {{user_prompt}}
-    Please write the test cases (give maximum number of test cases).
-    only provide data if required, otherwise omit the data key.
-    just give as mentioned below without any formational changes. remove all extra spaces and new lines and junk.
-    [
-            {
-                "summary": "This will be test name for test case 1",
-                "description": "This will be test description for test case 1",
-                "precondition": "This will be test preconditions for test case 1",
-                "steps": [
-                    {
-                        "action": "some action related to test case 1 for step 1",
-                        "data": "data related to test case 1 for step 1",
-                        "result": "expected result 1."
-                    },
-                    {
-                        "action": "some action related to test case 1 for step 2",
-                        "data": "data related to test case 1 for step 2",
-                        "result": "expected result 2"
-                    },
-                    {
-                        "action": "some action related to test case 1 for step 3",
-                        "data": "data related to test case 1 for step 3",
-                        "result": "expected result 3"
-                    }
-                ]
-            },
-            {
-                "summary": "This will be test name for test case 2",
-                "description": "This will be test description for test case 2",
-                "precondition": "This will be test preconditions for test case 2",
-                "steps": [
-                    {
-                        "action": "some action related to test case 2 for step 1",
-                        "data": "data related to test case 2 for step 1",
-                        "result": "expected result 1."
-                    },
-                    {
-                        "action": "some action related to test case 2 for step 2",
-                        "data": "data related to test case 2 for step 3",
-                        "result": "expected result 2"
-                    },
-                    {
-                        "action": "some action related to test case 2 for step 3",
-                        "data": "data related to test case 2 for step 3",
-                        "result": "expected result 3"
-                    }
-                ]
-            }
-    ]
+system_prompt_for_test_cases = '''
+You are an assistant to an application that generates test cases for quality engineers (QEs) at a software company who are testing features and products currently under development. I will pass you the the name,description, workflow, and acceptance criteria (AC) specified for a development item. Using this information, please generate a json array of clear, reasonably detailed, and comprehensive test cases that will allowthe QEs to confirm that the defined functionality either works or does not work as intended. Each test case should clearly specify the set of actions that a QE should take to execute the test case. Generate enoughtest cases to confirm each aspect of the defined workflow. 
+The array of test cases must adhere to the following json scheme:
+[{"summary":"name of test case","description":"description of test case","precondition":"preconditions that must exist for executing the test case","steps":[{"action":"literal action to execute","data":"data needed to execute action","result":"expected result of executing this action"}]}]
 '''
 
-prompt_for_workflow= "Generate Test strategy where functionality of {{summary}} with Description: {{description}} and Acceptance Criteria: {{ac}}. Please give scenarios titles only"
+user_prompt_for_test_cases = "Given the information for the following development item, generate maximum set of test cases (in JSON Array provided) for {{summary}} with Description: {{description}}, Workflow: {{workflow}} and Acceptance Criteria: {{ac}} {{additional_user_input}}."
+
+prompt_for_workflow= "Generate Test strategy where functionality of {{summary}} with Description: {{description}} and Acceptance Criteria: {{ac}} {{additional_user_input}}. Please give scenarios titles only"
     
 
 def clean_text(text):
@@ -168,7 +122,7 @@ class JiraService:
         return user["displayName"]
 
     def start_generating(
-        self, user_story_list, system_prompt, user_prompt, select_prompt="testcases",
+        self, user_story_list, additional_user_input, select_prompt="testcases",
         drsAccessToken=None
     ):
         jiraOptions = {"server": self.server}
@@ -179,16 +133,11 @@ class JiraService:
         for x, i in enumerate(user_story_list):
             singleIssue = jira.issue(i)
             print(f"issue id {singleIssue.key}")
-            story_data = {
-                "id": singleIssue.id,
-                "key": singleIssue.key,
-                "summary": singleIssue.fields.summary,
-                "description": singleIssue.fields.description,
-                "workflow": singleIssue.fields.customfield_10059,
-                "ac": singleIssue.fields.customfield_10060,
-            }
 
             if select_prompt == "testcases":
+                # setting system prompt for testcases
+                # base prompt is user prompt with additional details + any other user input
+                system_prompt = system_prompt_for_test_cases
 
                 searchQuery = get_search_query(
                     singleIssue.fields.summary,
@@ -209,27 +158,34 @@ class JiraService:
                         {}
                         **User Query:** {}
                     """.format(
-                        relevant_documentation, prompt_for_test_cases
+                        relevant_documentation, user_prompt_for_test_cases
                     )
                 else:
-                    base_prompt = prompt_for_test_cases
+                    base_prompt = user_prompt_for_test_cases
 
             if select_prompt == "workflow":
                 print(f"{x+1} Generating workflow for story..{i}")
                 base_prompt = prompt_for_workflow
 
+            story_data = {
+                "id": singleIssue.id,
+                "key": singleIssue.key,
+                "summary": singleIssue.fields.summary,
+                "description": singleIssue.fields.description,
+                "workflow": singleIssue.fields.customfield_10059,
+                "ac": singleIssue.fields.customfield_10060,
+            }
             for key in ["summary", "description", "workflow", "ac"]:
                 if story_data.get(key) is None:
                     continue
                 base_prompt = base_prompt.replace("{{" + key + "}}", story_data[key])
 
-            base_prompt = base_prompt.replace("{{user_prompt}}", user_prompt)
+            base_prompt = base_prompt.replace("{{additional_user_input}}", additional_user_input)
 
-            print(f"System Prompt: {system_prompt}\nUser Prompt: {user_prompt}")
+            print(f"System Prompt: {system_prompt}\nUser Prompt: {base_prompt}")
 
             result = OpenAIService(self.openai_api_key).get_completion(
                 system_prompt, base_prompt
             )
 
             return result
-
